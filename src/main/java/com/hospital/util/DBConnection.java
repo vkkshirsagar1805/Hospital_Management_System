@@ -7,14 +7,27 @@ import java.sql.SQLException;
 
 public class DBConnection {
 
-	private static final String URL =
-			"jdbc:mysql://localhost:3306/hospital_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+    private static final String DEFAULT_URL =
+        "jdbc:mysql://localhost:3306/hospital_db"
+        + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
 
+    private static final String URL =
+        getEnv("DB_URL", DEFAULT_URL);
 
-    private static final String USER = "root";
-    private static final String PASSWORD = "Vijay@1805";
+    private static final String USER =
+        getEnv("DB_USER", "root");
+
+    private static final String PASSWORD =
+        getEnv("DB_PASSWORD", "");
 
     private DBConnection() {
+    }
+
+    private static String getEnv(String name, String defaultValue) {
+        String value = System.getenv(name);
+        return (value == null || value.isBlank())
+                ? defaultValue
+                : value;
     }
 
     public static Connection getConnection() throws SQLException {
